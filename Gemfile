@@ -1,7 +1,7 @@
-source :rubygems
+source 'https://rubygems.org/'
 
-gem 'ya2yaml'
+gemspec
 
-group :development do
-  gem "rspec", ">= 2.3.0"
+group :development, :test do
+  gem 'debugger'
 end
