@@ -4,7 +4,14 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 EN = "spec/work/en.yml"
 
 def run(comm)
-  `bin/i18s #{comm}`
+  #`bin/i18s #{comm}`
+  # execute manually so we can use debugger
+  path, *args = comm.split
+  if path == 'add'
+    I18S.add_key *args
+  else
+    I18S.work_on [path] + args, lang: :en
+  end
 end
 
 def result(name)
@@ -105,13 +112,15 @@ describe "I18nSync" do
   describe "Creating files" do
 
     it "should create a new one" do
-      newfile = "spec/work/fo.yml"; `rm #{newfile}` if File.exists?(newfile)
+      newfile = "spec/work/fo.yml"
+      File.delete(newfile) if File.exists?(newfile)
       run("#{EN} fo")
       File.read(newfile).should eql("# Comment cool\n--- \nfo: \n  sync: \"To Sync It!\"\n  test: Test\n")
     end
 
     it "should create a new with the right name" do
-      newfile = "spec/work/named.fo.yml"; `rm #{newfile}` if File.exists?(newfile)
+      newfile = "spec/work/named.fo.yml"
+      File.delete(newfile) if File.exists?(newfile)
       run("spec/work/named.en.yml fo")
       File.read(newfile).should eql("\n--- \nfo: \n  another: Another\n  something: Something\n")
     end
