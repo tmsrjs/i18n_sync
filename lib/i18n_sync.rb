@@ -9,10 +9,10 @@ require 'ya2yaml'
 # TODO: Fixed in ruby 1.9.x ???
 
 class Hash
-  def deep_merge!(other_hash)
+  def deep_sync!(other_hash)
     other_hash.each do |k,v|
       next unless tv = self[k]
-      self[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? tv.dup.deep_merge!(v) : v
+      self[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? tv.dup.deep_sync!(v) : v
     end
     self
   end
@@ -20,7 +20,7 @@ end
 
 class I18S
 
-  VERSION = '0.5.1' # babel shark
+  VERSION = '0.5.2' # babel shark
 
   # Just here cuz I'm lazy....TBF really ugly !  ! ! !
   def self.work_on(argv, opts = {}, argf = [])
@@ -84,7 +84,7 @@ class I18S
       out "Writing #{filename}"
       (_comments, old) = read_file(filename, lang)
       # Initializing hash variable as empty if it does not exist
-      other = @words.dup.deep_merge! old
+      other = @words.dup.deep_sync! old
       write_file(filename, lang, @comments, other)
     end
   end
